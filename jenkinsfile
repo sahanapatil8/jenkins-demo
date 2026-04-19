@@ -2,21 +2,24 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+
+        stage('Clone Code') {
             steps {
-                echo 'Building from GitHub...'
+                git 'https://github.com/sahanapati8/jenkins-demo.git'
             }
         }
 
-        stage('Test') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Testing from GitHub...'
+                sh 'docker build -t myapp .'
             }
         }
 
-        stage('Deploy') {
+        stage('Run Container') {
             steps {
-                echo 'Deploying from GitHub...'
+                sh 'docker stop myapp || true'
+                sh 'docker rm myapp || true'
+                sh 'docker run -d -p 8081:80 --name myapp myapp'
             }
         }
     }
